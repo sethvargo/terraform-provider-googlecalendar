@@ -19,6 +19,7 @@ GOVERSION := 1.9.1
 PROJECT := $(CURRENT_DIR:$(GOPATH)/src/%=%)
 OWNER := $(notdir $(patsubst %/,%,$(dir $(PROJECT))))
 NAME := $(notdir $(PROJECT))
+VERSION := 0.1.0
 EXTERNAL_TOOLS = \
 	github.com/golang/dep/cmd/dep
 
