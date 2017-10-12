@@ -13,18 +13,18 @@ treat infrastructure as code!
 
 1. Move it into `$HOME/.terraform.d/plugins`:
 
-  ```sh
-  $ mkdir -p $HOME/.terraform.d/plugins
-  $ mv terraform-provider-googlecloud $HOME/.terraform.d/plugins/terraform-provider-googlecloud
-  ```
+    ```sh
+    $ mkdir -p $HOME/.terraform.d/plugins
+    $ mv terraform-provider-googlecloud $HOME/.terraform.d/plugins/terraform-provider-googlecloud
+    ```
 
 1. Create your Terraform configurations as normal, and run `terraform init`:
 
-  ```sh
-  $ terraform init
-  ```
+    ```sh
+    $ terraform init
+    ```
 
-  This will find the plugin locally.
+    This will find the plugin locally.
 
 
 ## Usage
@@ -33,66 +33,66 @@ treat infrastructure as code!
 account. You can create the service account in any project, but make sure you
 choose "server-to-server" communication, since this is not an OAuth application.
 
-  1. Visit the [Google Cloud Credentials Console][gcloud-creds]
-  1. Click "Create credentials"
-  1. Choose "Service account key"
-  1. Use "Compute Engine default service account" (or make your own)
-  1. Choose "JSON" as the key type
-  1. Click "Create"
+    1. Visit the [Google Cloud Credentials Console][gcloud-creds]
+    1. Click "Create credentials"
+    1. Choose "Service account key"
+    1. Use "Compute Engine default service account" (or make your own)
+    1. Choose "JSON" as the key type
+    1. Click "Create"
 
-  After a few seconds, your browser will download a credentials file in JSON.
-  Save this file securely (treat it like a password).
+    After a few seconds, your browser will download a credentials file in JSON.
+    Save this file securely (treat it like a password).
 
-  Note: if you are making your own service account, be sure to grant access to
-  the "calendar" OAuth scope!
+    Note: if you are making your own service account, be sure to grant access to
+    the "calendar" OAuth scope!
 
 1. Set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable to point to your newly-downloaded credentials file:
 
-  ```sh
-  $ export GOOGLE_APPLICATION_CREDENTIALS=/path/to/my-creds.json
-  ```
+    ```sh
+    $ export GOOGLE_APPLICATION_CREDENTIALS=/path/to/my-creds.json
+    ```
 
-  The Terraform provider automatically reads this environment variable and uses
-  the file at the given path for authentication.
+    The Terraform provider automatically reads this environment variable and
+    uses the file at the given path for authentication.
 
 1. Create a Terraform configuration file:
 
-  ```hcl
-  resource "googlecalendar_event" "example" {
-    summary     = "My Event"
-    description = "Long-form description of the event"
-    location    = "Conference Room B"
+    ```hcl
+    resource "googlecalendar_event" "example" {
+      summary     = "My Event"
+      description = "Long-form description of the event"
+      location    = "Conference Room B"
 
-    // Start and end times work best if specified as RFC3339.
-    start = "2017-10-12T15:00:00-05:00"
-    end   = "2017-10-12T17:00:00-05:00"
+      // Start and end times work best if specified as RFC3339.
+      start = "2017-10-12T15:00:00-05:00"
+      end   = "2017-10-12T17:00:00-05:00"
 
-    // Each attendee is listed separately, and attendees can be marked as
-    // optional.
-    attendee {
-      email = "seth@sethvargo.com"
+      // Each attendee is listed separately, and attendees can be marked as
+      // optional.
+      attendee {
+        email = "seth@sethvargo.com"
+      }
+
+      attendee {
+        email    = "you@company.com"
+        optional = true
+      }
     }
-
-    attendee {
-      email    = "you@company.com"
-      optional = true
-    }
-  }
-  ```
+    ```
 
 1. Run `terraform init` to pull in the provider:
 
-  ```sh
-  $ terraform init
-  ```
+    ```sh
+    $ terraform init
+    ```
 
 1. Run `terraform plan` and `terraform apply` to create events:
 
-  ```sh
-  $ terraform plan
+    ```sh
+    $ terraform plan
 
-  $ terraform apply
-  ```
+    $ terraform apply
+    ```
 
 ## Examples
 
