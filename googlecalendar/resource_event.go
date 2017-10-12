@@ -89,7 +89,7 @@ func resourceEvent() *schema.Resource {
 
 			"attendee": &schema.Schema{
 				Type:     schema.TypeSet,
-				Required: true,
+				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"email": &schema.Schema{
