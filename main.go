@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/hashicorp/terraform/plugin"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/sethvargo/terraform-provider-google-calendar/googlecalendar"
+	"github.com/sethvargo/terraform-provider-googlecalendar/googlecalendar"
 )
 
 func main() {
