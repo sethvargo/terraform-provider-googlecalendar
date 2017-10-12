@@ -113,8 +113,6 @@ Arguments are provided as inputs to the resource, in the `*.tf` file.
 - `end` `(string, required)` - the RFC3339-formatted end time of the event _with
   the timestamp included_.
 
----
-
 - `description` `(string)` - the long-form description of the event. This can be
   multiple paragraphs using Terraform's heredoc syntax.
 
@@ -141,9 +139,9 @@ Arguments are provided as inputs to the resource, in the `*.tf` file.
 - `visibility` `(string)` - specifies the visibility for the event. Valid values
   are:
 
-      - `""` - default inherit from calendar
-      - `"public"` - public
-      - `"private"` - private
+    - `""` - default inherit from calendar
+    - `"public"` - public
+    - `"private"` - private
 
 - `attendee` `(list of structures)` - specifies a guest (attendee) to invite to
   the event. This may be specified more than once to invite multiple people to
@@ -182,7 +180,7 @@ Attributes are values that are only known after creation.
   In practice, I have been unable to get this link to appear.
 
 - `html_link` `(string)` - the HTTP web link to the calendar invite on
-  calendar.google.com.
+  [calendar.google.com](https://calendar.google.com/).
 
 
 ## Constraints & Understanding
@@ -209,6 +207,10 @@ actually do this? Should I actually manage my Google Calendar events as code.
 The answer - probably not. However, this repository showcases that almost
 anything is possible with Terraform.
 
+## License & Author
+
+This project is licensed under the MIT license by Seth Vargo
+(seth@sethvargo.com).
 
 [terraform]: https://www.terraform.io/
 [releases]: https://github.com/sethvargo/terraform-provider-googlecalendar/releases
