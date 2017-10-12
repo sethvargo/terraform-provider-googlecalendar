@@ -1,0 +1,5 @@
+terraform-provider-*
+.terraform
+terraform.tfstate*
+*.log
+credentials.json
