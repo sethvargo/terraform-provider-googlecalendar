@@ -14,8 +14,8 @@ treat infrastructure as code!
 1. Move it into `$HOME/.terraform.d/plugins`:
 
     ```sh
-    $ mkdir -p $HOME/.terraform.d/plugins
-    $ mv terraform-provider-googlecalendar $HOME/.terraform.d/plugins/terraform-provider-googlecalendar
+    $ mkdir -p $HOME/.terraform.d/plugins/linux_amd64
+    $ mv terraform-provider-googlecalendar $HOME/.terraform.d/plugins/terraform-provider-googlecalendar_v0.1.0
     ```
 
 1. Create your Terraform configurations as normal, and run `terraform init`:
