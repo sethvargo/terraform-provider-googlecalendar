@@ -25,79 +25,79 @@ func resourceEvent() *schema.Resource {
 		Delete: resourceEventDelete,
 
 		Schema: map[string]*schema.Schema{
-			"summary": &schema.Schema{
+			"summary": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
 
-			"location": &schema.Schema{
+			"location": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
 
-			"description": &schema.Schema{
+			"description": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
 
-			"start": &schema.Schema{
+			"start": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
 
-			"end": &schema.Schema{
+			"end": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
 
-			"guests_can_invite_others": &schema.Schema{
+			"guests_can_invite_others": {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  true,
 			},
 
-			"guests_can_modify": &schema.Schema{
+			"guests_can_modify": {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  false,
 			},
 
-			"guests_can_see_other_guests": &schema.Schema{
+			"guests_can_see_other_guests": {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  true,
 			},
 
-			"show_as_available": &schema.Schema{
+			"show_as_available": {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  false,
 			},
 
-			"send_notifications": &schema.Schema{
+			"send_notifications": {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  true,
 			},
 
-			"visibility": &schema.Schema{
+			"visibility": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				Default:      "",
 				ValidateFunc: validation.StringInSlice(eventValidVisbilities, false),
 			},
 
-			"attendee": &schema.Schema{
+			"attendee": {
 				Type:     schema.TypeSet,
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"email": &schema.Schema{
+						"email": {
 							Type:     schema.TypeString,
 							Required: true,
 						},
 
-						"optional": &schema.Schema{
+						"optional": {
 							Type:     schema.TypeBool,
 							Optional: true,
 							Default:  false,
@@ -106,18 +106,18 @@ func resourceEvent() *schema.Resource {
 				},
 			},
 
-			"reminder": &schema.Schema{
+			"reminder": {
 				Type:     schema.TypeSet,
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"method": &schema.Schema{
+						"method": {
 							Type:         schema.TypeString,
 							Required:     true,
 							ValidateFunc: validation.StringInSlice(eventValidMethods, false),
 						},
 
-						"before": &schema.Schema{
+						"before": {
 							Type:     schema.TypeString,
 							Required: true,
 						},
@@ -125,20 +125,26 @@ func resourceEvent() *schema.Resource {
 				},
 			},
 
+			"calendar_id": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "primary",
+			},
+
 			//
 			// Computed values
 			//
-			"event_id": &schema.Schema{
+			"event_id": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
 
-			"hangout_link": &schema.Schema{
+			"hangout_link": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
 
-			"html_link": &schema.Schema{
+			"html_link": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
@@ -155,10 +161,12 @@ func resourceEventCreate(d *schema.ResourceData, meta interface{}) error {
 		return errors.Wrap(err, "failed to build event")
 	}
 
+	calendarID := d.Get("calendar_id").(string)
+
 	ctx, cancel := contextWithTimeout()
 	defer cancel()
 	eventAPI, err := config.calendar.Events.
-		Insert("primary", event).
+		Insert(calendarID, event).
 		SendNotifications(d.Get("send_notifications").(bool)).
 		MaxAttendees(25).
 		Context(ctx).
@@ -176,10 +184,12 @@ func resourceEventCreate(d *schema.ResourceData, meta interface{}) error {
 func resourceEventRead(d *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
 
+	calendarID := d.Get("calendar_id").(string)
+
 	ctx, cancel := contextWithTimeout()
 	defer cancel()
 	event, err := config.calendar.Events.
-		Get("primary", d.Id()).
+		Get(calendarID, d.Id()).
 		Context(ctx).
 		Do()
 	if err != nil {
@@ -227,10 +237,12 @@ func resourceEventUpdate(d *schema.ResourceData, meta interface{}) error {
 		return errors.Wrap(err, "failed to build event")
 	}
 
+	calendarID := d.Get("calendar_id").(string)
+
 	ctx, cancel := contextWithTimeout()
 	defer cancel()
 	eventAPI, err := config.calendar.Events.
-		Update("primary", d.Id(), event).
+		Update(calendarID, d.Id(), event).
 		SendNotifications(d.Get("send_notifications").(bool)).
 		MaxAttendees(25).
 		Context(ctx).
@@ -249,12 +261,13 @@ func resourceEventDelete(d *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
 
 	id := d.Id()
+	calendarID := d.Get("calendar_id").(string)
 	sendNotifications := d.Get("send_notifications").(bool)
 
 	ctx, cancel := contextWithTimeout()
 	defer cancel()
 	err := config.calendar.Events.
-		Delete("primary", id).
+		Delete(calendarID, id).
 		SendNotifications(sendNotifications).
 		Context(ctx).
 		Do()
