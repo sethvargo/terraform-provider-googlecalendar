@@ -310,10 +310,10 @@ func resourceEventBuild(d *schema.ResourceData, meta interface{}) (*calendar.Eve
 	event.Transparency = boolToTransparency(showAsAvailable)
 	event.Visibility = visibility
 	event.Start = &calendar.EventDateTime{
-		DateTime: start,
+		Date: start,
 	}
 	event.End = &calendar.EventDateTime{
-		DateTime: end,
+		Date: end,
 	}
 
 	// Parse reminders
