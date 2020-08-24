@@ -43,7 +43,6 @@ signs:
       - "--detach-sign"
       - "${artifact}"
 release:
-  # Visit your project's GitHub Releases page to publish this release.
-  draft: true
+  draft: false
 changelog:
   skip: true
