@@ -2,16 +2,8 @@
 package googlecalendar
 
 import (
-	"context"
-	"time"
-
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/pkg/errors"
-)
-
-var (
-	// contextTimeout is the global context timeout for requests to complete.
-	contextTimeout = 15 * time.Second
 )
 
 // Provider returns the actual provider instance.
@@ -36,9 +28,4 @@ func providerConfigure(provider *schema.Provider) schema.ConfigureFunc {
 		}
 		return &c, nil
 	}
-}
-
-// contextWithTimeout creates a new context with the global context timeout.
-func contextWithTimeout() (context.Context, func()) {
-	return context.WithTimeout(context.Background(), contextTimeout)
 }

@@ -33,6 +33,7 @@ func (c *Config) loadAndValidate(provider *schema.Provider) error {
 	if err != nil {
 		return nil
 	}
+	calendarSvc.UserAgent = userAgent
 	c.calendar = calendarSvc
 
 	return nil

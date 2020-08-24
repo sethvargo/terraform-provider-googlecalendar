@@ -155,13 +155,10 @@ func resourceEventCreate(d *schema.ResourceData, meta interface{}) error {
 		return errors.Wrap(err, "failed to build event")
 	}
 
-	ctx, cancel := contextWithTimeout()
-	defer cancel()
 	eventAPI, err := config.calendar.Events.
 		Insert("primary", event).
 		SendNotifications(d.Get("send_notifications").(bool)).
 		MaxAttendees(25).
-		Context(ctx).
 		Do()
 	if err != nil {
 		return errors.Wrap(err, "failed to create event")
@@ -176,11 +173,8 @@ func resourceEventCreate(d *schema.ResourceData, meta interface{}) error {
 func resourceEventRead(d *schema.ResourceData, meta interface{}) error {
 	config := meta.(*Config)
 
-	ctx, cancel := contextWithTimeout()
-	defer cancel()
 	event, err := config.calendar.Events.
 		Get("primary", d.Id()).
-		Context(ctx).
 		Do()
 	if err != nil {
 		return errors.Wrap(err, "failed to read event")
@@ -227,13 +221,10 @@ func resourceEventUpdate(d *schema.ResourceData, meta interface{}) error {
 		return errors.Wrap(err, "failed to build event")
 	}
 
-	ctx, cancel := contextWithTimeout()
-	defer cancel()
 	eventAPI, err := config.calendar.Events.
 		Update("primary", d.Id(), event).
 		SendNotifications(d.Get("send_notifications").(bool)).
 		MaxAttendees(25).
-		Context(ctx).
 		Do()
 	if err != nil {
 		return errors.Wrap(err, "failed to update event")
@@ -251,12 +242,9 @@ func resourceEventDelete(d *schema.ResourceData, meta interface{}) error {
 	id := d.Id()
 	sendNotifications := d.Get("send_notifications").(bool)
 
-	ctx, cancel := contextWithTimeout()
-	defer cancel()
 	err := config.calendar.Events.
 		Delete("primary", id).
 		SendNotifications(sendNotifications).
-		Context(ctx).
 		Do()
 	if err != nil {
 		return errors.Wrap(err, "failed to delete event")
