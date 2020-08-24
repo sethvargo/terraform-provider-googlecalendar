@@ -6,16 +6,10 @@ import (
 	"log"
 	"runtime"
 
-	"github.com/hashicorp/terraform/helper/logging"
-	"github.com/hashicorp/terraform/terraform"
-	"github.com/pkg/errors"
-	"golang.org/x/oauth2/google"
+	"github.com/hashicorp/terraform/helper/schema"
 	calendar "google.golang.org/api/calendar/v3"
+	"google.golang.org/api/option"
 )
-
-var oauthScopes = []string{
-	calendar.CalendarScope,
-}
 
 // Config is the structure used to instantiate the Google Calendar provider.
 type Config struct {
@@ -24,25 +18,21 @@ type Config struct {
 
 // loadAndValidate loads the application default credentials from the
 // environment and creates a client for communicating with Google APIs.
-func (c *Config) loadAndValidate() error {
+func (c *Config) loadAndValidate(provider *schema.Provider) error {
 	log.Printf("[INFO] authenticating with local client")
-	client, err := google.DefaultClient(context.Background(), oauthScopes...)
-	if err != nil {
-		return errors.Wrap(err, "failed to create client")
-	}
 
 	// Use a custom user-agent string. This helps google with analytics and it's
 	// just a nice thing to do.
-	client.Transport = logging.NewTransport("Google", client.Transport)
 	userAgent := fmt.Sprintf("(%s %s) Terraform/%s",
-		runtime.GOOS, runtime.GOARCH, terraform.VersionString())
+		runtime.GOOS, runtime.GOARCH, provider.TerraformVersion)
 
 	// Create the calendar service.
-	calendarSvc, err := calendar.New(client)
+	ctx := context.Background()
+	calendarSvc, err := calendar.NewService(ctx,
+		option.WithUserAgent(userAgent))
 	if err != nil {
 		return nil
 	}
-	calendarSvc.UserAgent = userAgent
 	c.calendar = calendarSvc
 
 	return nil
