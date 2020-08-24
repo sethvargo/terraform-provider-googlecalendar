@@ -7,15 +7,19 @@ treat infrastructure as code!
 
 ## Installation
 
-1. Download the latest compiled binary from [GitHub releases][releases].
+1. Use Terraform 0.13+.
 
-1. Unzip/untar the archive.
+1. Pull from the module registry:
 
-1. Move it into `$HOME/.terraform.d/plugins`:
-
-    ```sh
-    $ mkdir -p $HOME/.terraform.d/plugins/linux_amd64
-    $ mv terraform-provider-googlecalendar $HOME/.terraform.d/plugins/terraform-provider-googlecalendar_v0.1.0
+    ```hcl
+    terraform {
+      required_providers {
+        googlecalendar = {
+          source  = "sethvargo/googlecalendar"
+          version = "~> 0.3"
+        }
+      }
+    }
     ```
 
 1. Create your Terraform configurations as normal, and run `terraform init`:
@@ -24,36 +28,8 @@ treat infrastructure as code!
     $ terraform init
     ```
 
-    This will find the plugin locally.
-
 
 ## Usage
-
-1. You will need a valid Google Cloud account and permission to create a service
-account. You can create the service account in any project, but make sure you
-choose "server-to-server" communication, since this is not an OAuth application.
-
-    1. Visit the [Google Cloud Credentials Console][gcloud-creds]
-    1. Click "Create credentials"
-    1. Choose "Service account key"
-    1. Use "Compute Engine default service account" (or make your own)
-    1. Choose "JSON" as the key type
-    1. Click "Create"
-
-    After a few seconds, your browser will download a credentials file in JSON.
-    Save this file securely (treat it like a password).
-
-    Note: if you are making your own service account, be sure to grant access to
-    the "calendar" OAuth scope!
-
-1. Set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable to point to your newly-downloaded credentials file:
-
-    ```sh
-    $ export GOOGLE_APPLICATION_CREDENTIALS=/path/to/my-creds.json
-    ```
-
-    The Terraform provider automatically reads this environment variable and
-    uses the file at the given path for authentication.
 
 1. Create a Terraform configuration file:
 
@@ -199,13 +175,6 @@ event.
 A good future enhancement is to allow "human" times. Right now, all times _must_
 be specified in RFC3339 format. It would be great to allow arbitrary human times
 like "Oct 13, 2017 at 4pm EST".
-
-### Reality?
-
-Anytime we look at a software project, we have to ask ourselves - should I
-actually do this? Should I actually manage my Google Calendar events as code.
-The answer - probably not. However, this repository showcases that almost
-anything is possible with Terraform.
 
 ## License & Author
 
