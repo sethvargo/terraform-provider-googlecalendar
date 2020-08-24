@@ -5,10 +5,9 @@ import (
 	"log"
 	"time"
 
-	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/hashicorp/terraform/helper/validation"
-	"github.com/pkg/errors"
-	calendar "google.golang.org/api/calendar/v3"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
+	"google.golang.org/api/calendar/v3"
 )
 
 var (
@@ -152,7 +151,7 @@ func resourceEventCreate(d *schema.ResourceData, meta interface{}) error {
 
 	event, err := resourceEventBuild(d, meta)
 	if err != nil {
-		return errors.Wrap(err, "failed to build event")
+		return fmt.Errorf("failed to build event: %w", err)
 	}
 
 	eventAPI, err := config.calendar.Events.
@@ -161,7 +160,7 @@ func resourceEventCreate(d *schema.ResourceData, meta interface{}) error {
 		MaxAttendees(25).
 		Do()
 	if err != nil {
-		return errors.Wrap(err, "failed to create event")
+		return fmt.Errorf("failed to create event: %w", err)
 	}
 
 	d.SetId(eventAPI.Id)
@@ -177,7 +176,7 @@ func resourceEventRead(d *schema.ResourceData, meta interface{}) error {
 		Get("primary", d.Id()).
 		Do()
 	if err != nil {
-		return errors.Wrap(err, "failed to read event")
+		return fmt.Errorf("failed to read event: %w", err)
 	}
 
 	d.Set("summary", event.Summary)
@@ -218,7 +217,7 @@ func resourceEventUpdate(d *schema.ResourceData, meta interface{}) error {
 
 	event, err := resourceEventBuild(d, meta)
 	if err != nil {
-		return errors.Wrap(err, "failed to build event")
+		return fmt.Errorf("failed to build event: %w", err)
 	}
 
 	eventAPI, err := config.calendar.Events.
@@ -227,7 +226,7 @@ func resourceEventUpdate(d *schema.ResourceData, meta interface{}) error {
 		MaxAttendees(25).
 		Do()
 	if err != nil {
-		return errors.Wrap(err, "failed to update event")
+		return fmt.Errorf("failed to update event: %w", err)
 	}
 
 	d.SetId(eventAPI.Id)
@@ -247,7 +246,7 @@ func resourceEventDelete(d *schema.ResourceData, meta interface{}) error {
 		SendNotifications(sendNotifications).
 		Do()
 	if err != nil {
-		return errors.Wrap(err, "failed to delete event")
+		return fmt.Errorf("failed to delete event: %w", err)
 	}
 
 	d.SetId("")
@@ -301,7 +300,7 @@ func resourceEventBuild(d *schema.ResourceData, meta interface{}) (*calendar.Eve
 
 			d, err := time.ParseDuration(m["before"].(string))
 			if err != nil {
-				return nil, errors.Wrap(err, "failed to parse 'before'")
+				return nil, fmt.Errorf("failed to parse 'before': %w", err)
 			}
 			minutes := int64(d.Round(time.Minute).Minutes())
 
